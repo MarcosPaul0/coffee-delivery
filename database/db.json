@@ -1,0 +1,88 @@
+{
+  "coffees": [
+    {
+      "url": "src/assets/traditional.svg",
+      "name": "Expresso Tradicional",
+      "description": "",
+      "categories": ["tradicional"]
+    },
+    {
+      "url": "src/assets/americano",
+      "name": "Expresso Americano",
+      "description": "",
+      "categories": ["tradicional"]
+    },
+    {
+      "url": "src/assets/cream",
+      "name": "Expresso Cremoso",
+      "description": "",
+      "categories": ["tradicional"]
+    },
+    {
+      "url": "src/assets/ice",
+      "name": "Expresso Gelado",
+      "description": "",
+      "categories": ["tradicional", "gelado"]
+    },
+    {
+      "url": "src/assets/milk",
+      "name": "Café com Leite",
+      "description": "",
+      "categories": ["tradicional", "com leite"]
+    },
+    {
+      "url": "src/assets/latte",
+      "name": "Latte",
+      "description": "",
+      "categories": ["tradicional", "com leite"]
+    },
+    {
+      "url": "src/assets/capuccino",
+      "name": "Capuccino",
+      "description": "",
+      "categories": ["tradicional", "com leite"]
+    },
+    {
+      "url": "src/assets/macchiato",
+      "name": "Macchiato",
+      "description": "",
+      "categories": ["tradicional", "com leite"]
+    },
+    {
+      "url": "src/assets/mocaccino",
+      "name": "Mocaccino",
+      "description": "",
+      "categories": ["tradicional", "com leite"]
+    },
+    {
+      "url": "src/assets/hot",
+      "name": "Chocolate Quente",
+      "description": "",
+      "categories": ["especial", "com leite"]
+    },
+    {
+      "url": "src/assets/cubano",
+      "name": "Cubano",
+      "description": "",
+      "categories": ["especial", "alcoólico", "gelado"]
+    },
+    {
+      "url": "src/assets/havaiano",
+      "name": "Havaiano",
+      "description": "",
+      "categories": ["especial"]
+    },
+    {
+      "url": "src/assets/arabe",
+      "name": "Árabe",
+      "description": "",
+      "categories": ["especial"]
+    },
+    {
+      "url": "src/assets/irlandes",
+      "name": "Irlandês",
+      "description": "",
+      "categories": ["alcoólico"]
+    }
+  ]
+}
