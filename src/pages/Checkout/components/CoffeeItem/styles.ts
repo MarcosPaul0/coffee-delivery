@@ -47,9 +47,7 @@ export const ActionsContainer = styled.div`
 
     > button:last-child {
       height: 2rem;
-
       font-size: 0.75rem;
-
       display: flex;
       align-items: center;
       gap: 0.25rem;
@@ -57,9 +55,13 @@ export const ActionsContainer = styled.div`
       border-radius: 6px;
       line-height: 160%;
       padding: 0.5rem 0.40625rem;
-
       background: ${theme.gray_400};
       color: ${theme.brown_400};
+      transition: background 0.2s;
+
+      &:hover {
+        background: ${theme.gray_500};
+      }
     }
   `}
 `;

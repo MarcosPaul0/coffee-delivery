@@ -1,128 +1,128 @@
 import {
-  Bank,
-  CreditCard,
-  CurrencyDollar,
-  MapPinLine,
-  Money,
-  Trash,
-} from "phosphor-react";
-import { useContext } from "react";
-import { ThemeContext } from "styled-components";
-import { Input } from "../../components/Input";
-import {
-  CheckoutContainer,
-  FormHeader,
-  FormContainer,
-  InputsContainer,
-  PaymentContainer,
   Title,
   CoffeesSelectedContainer,
-  ConfirmButton,
-  OrderDetailsContainer,
+  CheckoutContainer,
+  FormContainer,
 } from "./styles";
 
-import coffeeImg from "../../assets/traditional.svg";
-import { QuantityButton } from "../../components/QuantityButton";
-import { CoffeeItem } from "../../components/CoffeeItem";
+import { useCartContext } from "../../contexts/CartContext";
+import { transformNumberToReal } from "../../utils/transformNumberToReal";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { api } from "../../services/api";
+import { ApiRoutes } from "../../constants/apiRoutes";
+import { useNotify } from "../../hooks/useNotify";
+import { useNavigate } from "react-router-dom";
+import { AppRoutes } from "../../constants/appRoutes";
+import { FormProvider } from "react-hook-form";
+import { ConfirmForm } from "./components/ConfirmForm";
+import { AddressForm } from "./components/AddressForm";
+import { PaymentForm } from "./components/PaymentForm";
 
+export type PaymentMethodType = "credit_card" | "debit_card" | "money";
+
+const registerOrderSchema = z.object({
+  postal_code: z
+    .string()
+    .regex(/^\d{5}-?\d{3}$/, {
+      message: "CEP inválido",
+    })
+    .transform((postalCode) => postalCode.replace("-", "")),
+  street: z.string(),
+  number: z.string().refine((number) => !Number.isNaN(parseInt(number))),
+  complement: z.string().nullable(),
+  district: z.string(),
+  city: z.string(),
+  state: z
+    .string()
+    .length(2, {
+      message: "Sigla do estado inválida",
+    })
+    .transform((state) => state.toUpperCase()),
+  payment_method: z.string(),
+});
+
+export type RegisterOrderFormData = z.infer<typeof registerOrderSchema>;
+
+// TODO adicionar responsividade
 export function Checkout() {
-  const { purple_500, yellow_800 } = useContext(ThemeContext);
+  const { errorNotify } = useNotify();
+
+  const { cart, resetCart } = useCartContext();
+
+  const navigate = useNavigate();
+
+  const methods = useForm<RegisterOrderFormData>({
+    resolver: zodResolver(registerOrderSchema),
+    defaultValues: {
+      payment_method: "credit_card",
+    },
+  });
+
+  const { handleSubmit } = methods;
+
+  const itemsAmount = cart.reduce(
+    (accumulator, item) => accumulator + item.amount,
+    0
+  );
+  const formattedItemsAmount = transformNumberToReal(itemsAmount);
+
+  const fakeDeliveryAmount = cart.length > 0 ? 32.5 : 0;
+  const formattedDeliveryAmount = transformNumberToReal(fakeDeliveryAmount);
+
+  const totalAmount = itemsAmount + fakeDeliveryAmount;
+  const formattedTotalAmount = transformNumberToReal(totalAmount);
+
+  async function registerOrder(data: RegisterOrderFormData) {
+    try {
+      await api.post(ApiRoutes.ORDERS, {
+        ...data,
+        total_amount: totalAmount,
+        items: cart.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+          amount: item.amount,
+        })),
+      });
+
+      resetCart();
+      navigate(AppRoutes.SUCCESS, {
+        state: {
+          city: data.city,
+          street: data.street,
+          number: data.number,
+          state: data.state,
+          district: data.district,
+          paymentMethod: data.payment_method,
+        },
+      });
+    } catch {
+      errorNotify("Ocorreu algum error ao registrar seu pedido");
+    }
+  }
 
   return (
-    <CheckoutContainer>
-      <form>
+    <FormProvider {...methods}>
+      <CheckoutContainer onSubmit={handleSubmit(registerOrder)}>
         <FormContainer>
           <Title>Complete seu pedido</Title>
 
-          <div>
-            <FormHeader>
-              <MapPinLine size={20} color={yellow_800} />
+          <AddressForm />
 
-              <div>
-                <h2>Endereço de Entrega</h2>
-                <p>Informe o endereço onde deseja receber seu pedido</p>
-              </div>
-            </FormHeader>
-
-            <InputsContainer>
-              <div>
-                <Input type="text" placeholder="CEP" width={40} />
-              </div>
-              <div>
-                <Input type="text" placeholder="Rua" width={100} />
-              </div>
-              <div>
-                <Input type="text" placeholder="Número" width={40} />
-                <Input type="text" placeholder="Complemento" width={60} />
-              </div>
-              <div>
-                <Input type="text" placeholder="Bairro" width={42} />
-                <Input type="text" placeholder="Cidade" width={49.3} />
-                <Input type="text" placeholder="UF" width={10.7} />
-              </div>
-            </InputsContainer>
-          </div>
-
-          <div>
-            <FormHeader>
-              <CurrencyDollar size={20} color={purple_500} />
-              <div>
-                <h2>Pagamento</h2>
-                <p>
-                  O pagamento é feito na entrega. Escolha a forma que deseja
-                  pagar
-                </p>
-              </div>
-            </FormHeader>
-
-            <PaymentContainer>
-              <button className="active">
-                <CreditCard size={20} color={purple_500} />
-                CARTÃO DE CRÉDITO
-              </button>
-
-              <button>
-                <Bank size={20} color={purple_500} />
-                CARTÃO DE DÉBITO
-              </button>
-
-              <button>
-                <Money size={20} color={purple_500} />
-                DINHEIRO
-              </button>
-            </PaymentContainer>
-          </div>
+          <PaymentForm />
         </FormContainer>
 
         <CoffeesSelectedContainer>
           <Title>Cafés selecionados</Title>
 
-          <div>
-            <ul>
-              <CoffeeItem />
-            </ul>
-
-            <OrderDetailsContainer>
-              <p>
-                <span>Total de itens</span>
-                <span>R$ 32,50</span>
-              </p>
-
-              <p>
-                <span>Entrega</span>
-                <span>R$ 32,50</span>
-              </p>
-
-              <p>
-                <strong>Total</strong>
-                <strong>R$ 65,00</strong>
-              </p>
-            </OrderDetailsContainer>
-
-            <ConfirmButton>CONFIRMAR PEDIDO</ConfirmButton>
-          </div>
+          <ConfirmForm
+            itemsAmount={formattedItemsAmount}
+            deliveryAmount={formattedDeliveryAmount}
+            totalAmount={formattedTotalAmount}
+          />
         </CoffeesSelectedContainer>
-      </form>
-    </CheckoutContainer>
+      </CheckoutContainer>
+    </FormProvider>
   );
 }

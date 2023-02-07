@@ -5,16 +5,13 @@ import heroImg from "../../assets/background.svg";
 export const Hero = styled.div`
   ${({ theme }) => css`
     width: 100%;
-
     background-image: ${`url(${heroImg})`};
     background-repeat: no-repeat;
     background-size: cover;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 3.5rem;
-
     padding: 5.75rem 10rem;
 
     h1 {
@@ -26,10 +23,8 @@ export const Hero = styled.div`
 
     p {
       color: ${theme.brown_600};
-
       font-size: 1.25rem;
       line-height: 1.625rem;
-
       padding: 1rem 6rem 1rem 0;
     }
   `}
@@ -38,7 +33,6 @@ export const Hero = styled.div`
 export const ItemsContainer = styled.div`
   ${({ theme }) => css`
     margin-top: 3.125rem;
-
     display: grid;
     grid-template-columns: 1fr 1fr;
     row-gap: 1.25rem;
@@ -46,9 +40,7 @@ export const ItemsContainer = styled.div`
 
     span {
       color: ${theme.brown_600};
-
       font-size: 1rem;
-
       display: flex;
       align-items: center;
       gap: 0.75rem;
@@ -71,7 +63,6 @@ export const Item = styled.div<ItemProps>`
   ${({ theme, bgColor }) => css`
     background: ${theme[BACKGROUND_COLOR[bgColor]]};
     color: ${theme.gray_100};
-
     padding: 0.5rem;
     line-height: 0;
     border-radius: 50%;
@@ -87,7 +78,14 @@ export const CoffeesList = styled.main`
     font-size: 2rem;
   }
 
-  > div {
+  ul {
+    width: 100%;
     margin-top: 3.375rem;
+    display: flex;
+    align-items: center;
+    row-gap: 2rem;
+    column-gap: 2.5rem;
+    flex-wrap: wrap;
+    list-style: none;
   }
 `;

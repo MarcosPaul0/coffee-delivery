@@ -2,8 +2,33 @@ import { CurrencyDollar, MapPin, Timer } from "phosphor-react";
 import { Item, SuccessContainer, Topic, TopicsContainer } from "./styles";
 
 import deliverymanImg from "../../assets/deliveryman.svg";
+import { useLocation } from "react-router-dom";
+import { PaymentMethodType } from "../Checkout";
 
+interface Order {
+  city: string;
+  street: string;
+  number: string;
+  state: string;
+  district: string;
+  paymentMethod: PaymentMethodType;
+}
+
+const PAYMENT_METHOD = {
+  credit_card: "Cartão de Crédito",
+  debit_card: "Cartão de Débito",
+  money: "Dinheiro",
+} as const;
+
+// TODO adicionar responsividade
 export function Success() {
+  const location = useLocation();
+
+  const { city, district, number, paymentMethod, state, street } =
+    location.state as Order;
+
+  const paymentMethodFormatted = PAYMENT_METHOD[paymentMethod];
+
   return (
     <SuccessContainer>
       <div>
@@ -17,8 +42,8 @@ export function Success() {
                 <MapPin size={20} />
               </Item>
               <span>
-                Entrega em <strong>Rua João Daniel Martinelli</strong>, 102,
-                Farrapos - Porto Alegre, RS
+                Entrega em <strong>{street}</strong>, {number}, {district} -{" "}
+                {city}, {state}
               </span>
             </Topic>
 
@@ -36,7 +61,7 @@ export function Success() {
                 <CurrencyDollar size={20} />
               </Item>
               <span>
-                Pagamento na entrega <strong>Cartão de Crédito</strong>
+                Pagamento na entrega <strong>{paymentMethodFormatted}</strong>
               </span>
             </Topic>
           </div>

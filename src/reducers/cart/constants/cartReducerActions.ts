@@ -1,0 +1,8 @@
+export const CartReducerActions = {
+  ADD_ITEM: "ADD_ITEM",
+  INCREMENT_ITEM: "INCREMENT_ITEM",
+  REMOVE_ITEM: "REMOVE_ITEM",
+  DECREMENT_ITEM: "DECREMENT_ITEM",
+  RESET_CART: "RESET_CART",
+  SET_CART: "SET_CART",
+} as const;

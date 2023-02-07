@@ -2,16 +2,29 @@ import { CoffeesList, Hero, Item, ItemsContainer } from "./styles";
 import { ShoppingCart, Package, Timer, Coffee } from "phosphor-react";
 
 import heroCoffeeImg from "../../assets/heroCoffee.svg";
-import { CoffeeCard } from "../../components/CoffeeCard";
-import { useState } from "react";
+import { CoffeeCard } from "./components/CoffeeCard";
+import { useEffect, useState } from "react";
+import { api } from "../../services/api";
+import { ApiRoutes } from "../../constants/apiRoutes";
 
-interface Coffee {
-  type: string;
-  quantity: number;
+export interface Coffee {
+  id: number;
+  url: string;
+  name: string;
+  description: string;
+  categories: string[];
+  price: number;
 }
 
+// TODO adicionar responsividade
 export function Home() {
-  const [coffees, setCoffees] = useState([]);
+  const [coffees, setCoffees] = useState<Coffee[]>([]);
+
+  useEffect(() => {
+    api
+      .get<Coffee[]>(ApiRoutes.COFFEES)
+      .then((response) => setCoffees(response.data));
+  }, []);
 
   return (
     <div>
@@ -57,9 +70,23 @@ export function Home() {
       <CoffeesList>
         <h1>Nossos cafés</h1>
 
-        <div>
-          <CoffeeCard />
-        </div>
+        <ul>
+          {coffees.map((coffee) => {
+            return (
+              <CoffeeCard
+                key={coffee.id}
+                coffee={{
+                  id: coffee.id,
+                  name: coffee.name,
+                  categories: coffee.categories,
+                  description: coffee.description,
+                  url: coffee.url,
+                  price: coffee.price,
+                }}
+              />
+            );
+          })}
+        </ul>
       </CoffeesList>
     </div>
   );
